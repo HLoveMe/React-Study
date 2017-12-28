@@ -44,3 +44,12 @@ React OC
 			xxxx
 		}
 	```
+* RCTBridge
+	```
+	```
+	
+* RCTUIManager
+	
+	```
+		
+	```

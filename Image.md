@@ -6,11 +6,29 @@ Image 加载
 * 分辨率
 	* icon@2x.png
 	* icon@3x.png
+* 资源
+
+	```
+		图片在打包之后就会被打包作为App图片资源
+		js 会提供 resolveAssetSource() 解决图片资源问题
+			1：于jsbundle一起打包的图片  
+				require('') 不需要携带@2x
+			2：ios系统工程Asset
+				require(name即可)
+			3:网络图片
+	```
+* 缓存框架
+
+	```
+		1：FB 有完整的一套缓存框架  但基本不使用
+		2：不使用任何缓存框架 图片还是有缓存  这是因为在提供NSURLCache对请求进行了同一缓存
+		3：第三方缓存框架 react-native-img-cache 
+	```
 * 使用
 
 	```
 	A:<Image source={ require('./Images/1.jpg') }></Image>
-		1:加载本地资源 
+		1:加载本地资源  required("../../a.png"
 		2:会显示图片默认大小
 		3:require(必须是常量，不能包含变量)
 		4:自动缩放图片 { width: undefined, height: undefined,flex:1 }
@@ -38,3 +56,4 @@ Image 加载
 			}
 	D:使用相册图片
 ```
+
