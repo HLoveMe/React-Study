@@ -55,7 +55,7 @@
 			推荐使用redux-watch中间件处理
 		通过 unsubscribe() 注销监听器。		
 	```
-* 中间件
+* 中间件的安装
 	
 	```
 		npm install --save redux-thunk
@@ -73,7 +73,7 @@
 * 整体结构
 	
 	```
-	types.js 管理全局 type
+	types.js 管理全局 type 事件名称
 		export Types={
 			HomeTypes:{
 				xx:00
@@ -140,7 +140,7 @@
 	
 	```
 	
-* React-redux
+* React-redux 管理整个React应用  React专用库
 
 	```
 	npm install --save react-redux
@@ -153,16 +153,18 @@
 			1.就是普通的UI组件  只负责展示
 			2.不负责数据逻辑 通过委托其容器组件负责处理
 			3.只需要使用props 不需要使用state
+			4.没有使用react-redux包装的组件  可以使用state
 		
 		容器组件:
 			1:和Redux 进行对接
 			2:UI组件进行数据向内传递 , 事件向外传递
 			3:尽量使用提供的函数进行包装 内部已经进行性能优化
 		
-		对外提供容器组件  但是仍然把它当做UI组件来使用
+		> 对外提供容器组件  但是仍然把它当做UI组件来使用
+		> 使用react-redux, React使用Redux的某个组件再无state。所有的state 为 Redux的state
 	
 	编写：
-		Types:
+		Types: 管理App所有事件类型
 			export Types={
 				HomeType:{
 					ADD:"ADD",
@@ -205,6 +207,7 @@
 								name:"ZZH"+`${Xs.type}`
 								Xs修改/添加属性
 							}
+							state 可是是任何类型
 						case DELETE:
 							return {}
 						default:
@@ -309,6 +312,7 @@
 		}
 		AppRegistry.registerComponent('HHH', () => HAPP);
 
+	
 	数据流动：
 		最初 父组价 ---- > 子组件props展示
 		外部事件产生
@@ -346,7 +350,7 @@
 		发送Action是会直接发送 Ation对象
 		导入该插件后 容许返回一个函数
 		
-		Store.dispatch((dispatch)=>{
+		Store.dispatch((dispatch,getState)=>{
 			fetch(url).then((res)=>{
 				return res.json()
 			}).then((json)=>{
@@ -365,7 +369,7 @@
 	```
 
 * redux-undo 中间件  会为你操作保存操作历史 以便回撤
-* redux-watch
+* redux-watch  工具 不是中间件
 
 	```
 	Redux提供的监听方法 需要自己比较前State 和 当前State才能知道。此次派发是针对哪个Type
@@ -375,12 +379,12 @@
 			Store.getState()
 			...
 		})
-	中间件：
+	使用：
 		npm i --save redux-watch
 		import watch from 'redux-watch'
 		
 		
-		let AddW = watch(Store.getState,"homeMain.name")
+		let AddW = watch(Store.getState,"homeMain.name监听的属性名称")
 			指定监听对象
 			按照Reducers层级 达到你想要监听的state/state的属性
 			
@@ -394,6 +398,11 @@
 		   		watch(Store.getState,"",func(a,b){return bool})
 	
 	```
+* redux-saga
+
+	```
+		比redux-thunk 强大 集中处理action副作用的操作
+	```
 * redux-ignore
 	
 	```
@@ -402,3 +411,5 @@
 		该插件可以控制调用特定
 		https://github.com/omnidan/redux-ignore
 	```
+	
+* redux-logger日志中间件
