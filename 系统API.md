@@ -198,6 +198,7 @@
 	系统指定
 	  	LayoutAnimation.easeInEaseOut()
 	自定义
+		指定UI刷新使用的动画
 		LayoutAnimation.configureNext({
             duration: 800,
             create: {
@@ -209,6 +210,8 @@
                 property: LayoutAnimation.Properties.scaleXY,
             }
         },func)
+		然后UI刷新
+		this.setState({...})
 		
 		android 需要调用
 			UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -431,7 +434,9 @@ WebViewManager
 		<Text>AA</Text>  如果不做处理这里面的内容是无效的
 	</CustomView>
  ```
-
+* 通知  
+	*  RN之间通知 DeviceEventEmitter
+	*  OC-RN通知 self.bride.eventDispatcher sendApp..
 * 定时器
 	
 	```
@@ -446,6 +451,8 @@ WebViewManager
 * 截屏
 	
 	```
+	takeSnapshot API
+	或者
 	import {UIManager} from 'react-native';
 	var ReactNative = require('react-native');
 	

@@ -4,6 +4,11 @@
 ```
 	概览：为了统一管理应用数据流 和 处理流 维护全局state
 	该state和React state 无任何关系
+	
+	1:Dispatch
+	2:Reducer函数触发  是否更新并返回新的state
+	3:如果触发更新state 就会触发到监听函数
+	4:watch监听函数
 ```
 * 原则
 	* 单一Store 维持单一State树
@@ -156,9 +161,10 @@
 			4.没有使用react-redux包装的组件  可以使用state
 		
 		容器组件:
-			1:和Redux 进行对接
+			1:自动订阅State 然后进行映射 更新UI组件
 			2:UI组件进行数据向内传递 , 事件向外传递
 			3:尽量使用提供的函数进行包装 内部已经进行性能优化
+			
 		
 		> 对外提供容器组件  但是仍然把它当做UI组件来使用
 		> 使用react-redux, React使用Redux的某个组件再无state。所有的state 为 Redux的state
@@ -300,6 +306,7 @@
 			})
 
 	Provider:为框架提供
+		为 容器组件 提供 state (mapStateToProps)
 		import { Provider } from 'react-redux'
 		class HAPP extends Component{
 		  render(){
@@ -314,21 +321,21 @@
 
 	
 	数据流动：
-		最初 父组价 ---- > 子组件props展示
 		外部事件产生
-			源数据变动             父组件数据变动
-			生成Action            生成将要产生的动作和必要数据
-			触发                  调用dispatch
-			Reducer处理           将之前的状态和Action 产生新的状态
-			容器组件               调用 容器UI  数据流入函数
-			UI展示组件             更新UI props 并刷新
+			源数据变动             
+			生成Action            
+			触发Dispatch {Store.dispatch | Provider -子组件>this.props.dispatch}              
+			Reducer处理           
+			state改变自动mapStateToProps触发 容器组件              
+			UI展示组件            
 		
 		内部事件产生
 			前提：
 				容器组件 已经定要好 数据事件
 			
-			传递必要数据到 触发函数
-			触发函数生成Action(type,data)
+			mapDispatchToProps 会绑定到props中
+			props.func 传递必要数据到 触发函数
+			触发函数生成dispatch Action(type,data)
 			
 	
 	增加/删除一个事件
@@ -369,7 +376,7 @@
 	```
 
 * redux-undo 中间件  会为你操作保存操作历史 以便回撤
-* redux-watch  工具 不是中间件
+* redux-watch  工具 不是中间件 监听State中的某个属性名称
 
 	```
 	Redux提供的监听方法 需要自己比较前State 和 当前State才能知道。此次派发是针对哪个Type
