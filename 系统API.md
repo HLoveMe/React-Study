@@ -65,6 +65,58 @@
         6:第一个输入框键盘
 	```
 * AppRegistry APP注册
+
+	```
+	.registerConfig(config:Array<AppConfig>)  
+		static 静态方法, 进行注册配置信息
+	
+	.registerComponent(appKey:string,getComponentFunc:ComponentProvider)  
+		static静态方法，进行注册跟组件
+		只有先注册 才能被欢迎唤醒
+		appKey -- 原生调用key 必须一致
+		
+	
+	.registerRunnable(appKey:string,func:Function)  
+		static静态方法 ，进行注册线程
+	
+	.registerAppKeys()  
+		static静态方法，进行获取所有组件的keys值
+	
+	.runApplication(appKey:string,appParameters:any) 
+		static静态方法, 进行运行应用
+	
+	.unmountApplicationComponentAtRootTag()  
+		static静态方法，结束应用
+		_
+		_
+切换 APP
+
+		全 RN 应用
+			ios 修改 appdelegate.m
+			android
+				settings.gradle
+				app.java.com.rypa.MainActivity.getMainComponentName
+		原生嵌套
+			android
+				 @Override
+    			 protected void onCreate(Bundle savedInstanceState) {
+        			super.onCreate(savedInstanceState);
+        			mReactRootView = new ReactRootView(this);
+        			mReactInstanceManager = ReactInstanceManager.builder()
+        			.setApplication(getApplication())
+					好多配置
+					....
+					.build();
+					mReactRootView.startReactApplication(mReactInstanceManager, "注册的Appkey", null);
+					setContentView(mReactRootView);
+    			}
+    			
+    		ios
+    			 [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+                                                     moduleName:@"MyApp"
+                                              initialProperties:@{}
+                                                  launchOptions:nil];
+	```
 * AppState监听当前APP所在状态
 	
 	```

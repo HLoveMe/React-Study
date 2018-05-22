@@ -58,8 +58,8 @@ Image 加载
 ```
 
 * 图片缓存 [介绍](http://awhisper.github.io/2016/07/17/Talk-about-ReactNative-Image-Component/)
-	* RN 原生端缓存 基本没做事件
-	* RN http 图片缓存直接把Request直接缓存
+	* RN 原生端缓存 基本没做事件 
+	* RN http 图片缓存直接把Response直接缓存
 	* 第三方缓存方案 react-native-img-cache
 
 * 图片组件
