@@ -79,6 +79,8 @@
 	    
 	    contentInset: EdgeInsetsPropType,//{0,0,0,0}
 	    point: PointPropType,//{x:0,y:0}
+	    
+	    xxStyle:ViewPropTypes.style
 	}
 	
 ```
