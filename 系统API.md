@@ -89,6 +89,33 @@
 		static静态方法，结束应用
 		_
 		_
+App顶层增加自己的视图
+	AppRegistry.setWrapperComponentProvider
+	AppRegistry.registerComponent
+		都可实现
+		import React, { Component } from 'react';
+		import { AppRegistry,View } from 'react-native';
+		import StaticContainer from 'static-container';
+		import { Provider } from 'react-redux';
+		AppRegistry.setWrapperComponentProvider(() => {
+		    return class TopView extends Component {
+		        constructor(ops) {
+		            super(ops)
+		            this.state = {
+		                children:[]
+		            }
+		        }
+		        render() {
+		            return (
+		                <AView style={{ flex: 1, backgroundColor: "yellow" }}>
+		                    {
+		                        this.props.children 原APP
+		                    }
+		                </AView>
+		            )
+		        }
+		    }
+		})
 切换 APP
 
 		全 RN 应用
