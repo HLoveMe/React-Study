@@ -7,6 +7,45 @@
 	import 'rxjs/add/operator/map';
 ```
 
+* 有用的第三方库
+	
+	*	create-react-context 
+			提供一个容器  便于在整个周期下使用变量
+			
+			```
+				import createReactContext from 'create-react-context';
+				const NavigationContext = createReactContext(默认值);
+				NavigationProvider = NavigationContext.Provider;
+				const NavigationConsumer = NavigationContext.Consumer;
+				<NavigationProvider value = {xxxValue}>
+					无论层级
+					<NavigationConsumer>
+						{
+							xxxValue =>{
+								return View
+							}
+						}
+					</NavigationConsumer>
+				</NavigationProvider>
+			```
+	* 高阶组件 
+			
+		```
+		高阶组件是一个函数 接受参数 和 低阶组件  返回高阶组件
+		便于代码复用
+		function(param){
+			拦截 
+			return function(Component){
+				return NewComponent
+			}
+		}
+		库 hoist-non-react-statics 这个组件会自动把所有绑定在对象上的非React方法都绑定到新的对象上 解决static 属性丢失
+		实例 https://github.com/reduxjs/react-redux/blob/master/src/components/connectAdvanced.js
+		说明 https://segmentfault.com/a/1190000008112017?_ea=1553893
+		```	
+			
+
+
 * 部分第三方库 [第三方库集合](https://www.jianshu.com/p/53ff78168acc)
 	
 	* 导航navigation
