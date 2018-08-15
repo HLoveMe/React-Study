@@ -43,7 +43,12 @@
 		实例 https://github.com/reduxjs/react-redux/blob/master/src/components/connectAdvanced.js
 		说明 https://segmentfault.com/a/1190000008112017?_ea=1553893
 		```	
+	* create-react-class
+	
+		```
 			
+			https://blog.csdn.net/younghaiqing/article/details/79562980		
+		```		
 
 
 * 部分第三方库 [第三方库集合](https://www.jianshu.com/p/53ff78168acc)
