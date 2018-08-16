@@ -347,6 +347,12 @@
 		
 	React Redux 问题：
 		http://cn.redux.js.org//docs/faq/ReactRedux.html
+		
+	React Redux 组件引用问题
+		connect(xx,oo,,null,{withRef:true})(Component)
+		this.refs.xx.oo() ==> this.refs.xx.getWrappedInstance().oo()
+		
+		https://segmentfault.com/a/1190000015172005?utm_source=channel-hottest
 	```
 	
 * Redux-thunk 中间件发送异步Action
