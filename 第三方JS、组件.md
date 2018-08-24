@@ -83,6 +83,8 @@
 			* cell ios风格 react-native-item-cell
 			* 多选框 react-virtualized-checkbox
 			* react-native0gifted-listview 上下拉
+		* 瀑布流
+			* https://github.com/AppAndFlow/react-native-masonry-list
 		* 轮播图 
 			* react-native-swiper
 			* react-native-snap-carousel 支持更多效果
