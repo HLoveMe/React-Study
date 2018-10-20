@@ -160,7 +160,41 @@
 	let Saga = createSagaMiddleware(...sagas)
 	Saga.run(RootSage,arg1,arg2...) 参数会传递到RootSaga
 	
-	take(ar)表示等待action触发
+	pattern 和  Channel
+		parttern 为action
+		channel 是包装之后的type 一个可缓存的parttern
+	
+	生成effects
+	effect =
+		Promise
+		* func{return Promise}
+		put(pattern | Channel)
+			pattern 派发action
+			put(channel,action)向指定channel派发action
+		take(pattern | Channel)
+			pattern 等待action
+			Channel 缓存多个action 如果有缓存 下次循环不再等待
+		call(任意func)
+		apply()
+		fork()
+		all()
+		race()
+		cancel()
+		join()
+		takeEvery
+		takeLatest
+		takeLeading
+		throttle
+		
+		
+	all([effect1,effect2]) 组合生成新的effect
+	yeild effect; 执行effect
+		
+	
+	delay(ms, [val])
+		生成一个同步延迟effect
+		
+	take(ar)表示等待action触发 
 		> "*" 或者 "ActionName" 
 		> (action)=>{
 			return bool
@@ -202,9 +236,121 @@
 		
 		分开写是为了降低saga 和 redux 和耦合度；
 		数据变更后 只需要修改a.js即可
-	```
+	all 会等待所有任务执行完成 解决集合返回
+		all({xx:effect,oo:effect}) = {xx,oo}
+		all([eff,eff]) = [eff,eff]
+	race
+		会等待全部完成 或者一个出现错误
+		
+	takeEvery
+		每次收到type执行saga
+	takeLatest
+		收到type  会把之前的saga取消(没有完成的) 再次执行saga
+	throttle
+		节流
+			控制saga触发次数 在执行后一段时间内 不在执行
+	takeLeading
 	
-* 对外输出
+	Channel 队列 支持缓存
+		while(true){
+			yeild take("AType")等待dispatch任务
+			yeild call()一个阻塞任务
+		}
+			dispatch一个Atype 就会被执行
+			任务阻塞期间 其他的dispatch会被遗忘
+		take(channel)
+			任务阻塞期间 dispatch会被缓存
+			下一个while循环 take不会等待直接执行
+	
+	actionChannel 生成 Channel
+		包装action Type 生成一个可缓存action对象;如果当前有缓存个数
+		
+	eventChannel 一个工厂函数  生成一个Channel 
+		用于吧redux action 以外的事件连接到saga上
+		import { eventChannel, END } from 'redux-saga'
+		let Achannel = evenChannel(emmter=>{
+			
+			return ()=>{
+				该函数会在Achannel.close()后调用
+				emmter(END)
+			}
+		})
+		连接saga
+		yeild take(Achannel)
+		....
+		
+	channel 一个函数 用于生成默认Channel
+		yeild call(chanel,..)
+	```
+* Channel
+	* eventChannel (websock 连接到saga)
+		
+		```
+			function CreateWebsocket(){
+				let web = new WebSocket()
+				return web
+			}
+				
+			function CreateEventChannel(socket){
+				return eventChannel(emmer=>{
+				
+					socket.onMessage("text",function(data){
+						//发送到saga
+						emmer(data)
+					})
+					return ()=>{
+						socket.close()
+					}
+				},缓存数量,)
+			}
+			
+			function * WebSage(){
+				let socket = yeild call(CreateWebsocket)
+				let channel = yeild call(CreateEventChannel,scoket)
+				while(true){
+					//接受到外部数据
+					let data = yeild take(channel)
+					yeild put({
+						type:"",
+						data
+					})
+				}
+			}
+		```
+	* Channel 保证最多三个同步任务
+	
+		```
+			import { channel,buffers } from 'redux-saga'
+			import { take, fork, ... } from 'redux-saga/effects'
+			
+			function * getNetData(channel){
+				while(true){
+					let action = yeild take(channel);
+					let data = yeild call(networl);
+					yeild put({
+						type,
+						data
+					})
+				}
+			}
+			function * GetXXInfoBox(){
+				//创建任务队列
+				let msgChannel = yeild call(channel)
+				
+				//开启三个任务
+				yeild fork(getNetData, msgChannel)
+				yeild fork(getNetData, msgChannel)
+				yeild fork(getNetData, msgChannel)
+				
+				while(true){
+					let action = yeild take("任务Type");
+					//吧action 派发到指定队列中
+					yeild put(msgChannel,action)
+				}
+			}
+		```
+	
+* 对外输出 支持redux以外的事件处理
 	
 	```
 		》默认saga  是和Redux 进行搭配的
@@ -303,4 +449,4 @@
             console.log(_new)
         }))
     }
-	```
+	```**
