@@ -89,8 +89,7 @@
 * 非堵塞(任务)
 
 	```
-		const task = yeild fork()
-		cancel(task)
+		const task = yeild fork() //cancel(task)
 	```
 * 多任务
 	
@@ -107,6 +106,7 @@
   			})
   			
 			如果有一个执行，就不在阻塞。并且关闭其他任务
+		all 并行完成 等待所有都完成
 		
  		yeild = take(["","",""])
  			得到其中一个
@@ -116,42 +116,11 @@
 	
 	```
 		takeEvery("",func,...agrs) 每次监听到 都会执行func
-		
+			fork子任务
+			
 		takeLatest("",func,...agrs) 每次监听到 会把之前的取消，在执行
+			fork子任务
 		
-		yield throttle(500, 'INPUT_CHANGED', handleInput)控制触发间隔
-		
-		
-		actionChannel:保证当前仅仅执行一个任务
-			每次等待Request任务就会发出任务
-			》func *watchR(){
-				while(true){
-					yeild take("Request")
-					yeild call(AAAA)
-				}
-			}
-			
-			/////actionChannel/////
-			》只有当任务handleRequest执行完成 才能再次触发
-			import { buffers } from 'redux-saga'
-			function* watchRequests() {
-  				//  为 REQUEST 创建一个 actionChannel 相当于一个缓冲区
-  				const requestChan = yield actionChannel('REQUEST')
-  				/***
-  					const requestChan = yield actionChannel('REQUEST',buffers.sliding(5))
-  					默认情况紧急容许一个任务执行  这样会容易最多五个一起执行
-  				*/
-
-  				while (true) {
-    				// 重 channel 中取一个 action
-    				const {payload} = yield take(requestChan)
-    				// 使用阻塞的方式调用 request
-   					yield call(handleRequest, payload)
- 				}
-			}
-		
-			
-			
 			
 	```
 * API
@@ -168,19 +137,24 @@
 	effect =
 		Promise
 		* func{return Promise}
+		* 
 		put(pattern | Channel)
 			pattern 派发action
 			put(channel,action)向指定channel派发action
+			
 		take(pattern | Channel)
 			pattern 等待action
 			Channel 缓存多个action 如果有缓存 下次循环不再等待
+		[ effect ]
 		call(任意func)
 		apply()
 		fork()
 		all()
+		select()
 		race()
 		cancel()
 		join()
+		flush
 		takeEvery
 		takeLatest
 		takeLeading
@@ -213,6 +187,9 @@
 		const res = yeild call(A,....)
 	apply(context,[....])
 	
+	select() 用于获取redux Store数据
+		select(state=>state.user)
+	
 	fork() 和call类似 但是不会阻塞
 		const res = yeild call(..)
 		console.log(res)
@@ -241,11 +218,13 @@
 		all([eff,eff]) = [eff,eff]
 	race
 		会等待全部完成 或者一个出现错误
+	flush(channel)
+		清空channel缓存的Action
 		
-	takeEvery
-		每次收到type执行saga
-	takeLatest
-		收到type  会把之前的saga取消(没有完成的) 再次执行saga
+	takeEvery 
+		每次收到type执行saga (执行子saga期间依然可以接受type)
+	takeLatest 
+		收到type  会把之前的saga取消(没有完成的) 再次执行saga(执行子saga期间依然可以接受type)
 	throttle
 		节流
 			控制saga触发次数 在执行后一段时间内 不在执行
@@ -316,6 +295,11 @@
 					})
 				}
 			}
+		```
+	* 节流 | 防抖动 | ajax 重试
+
+		```
+		
 		```
 	* Channel 保证最多三个同步任务
 	
