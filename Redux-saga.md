@@ -90,6 +90,11 @@
 
 	```
 		const task = yeild fork() //cancel(task)
+		
+		const task = yeild spawn()
+			创建一个非堵塞的任务 
+			该任务是独立的 和 当前任务无关（独立）（错误、取消 都是独立的）。
+			
 	```
 * 多任务
 	
@@ -115,11 +120,11 @@
 * 并发
 	
 	```
-		takeEvery("",func,...agrs) 每次监听到 都会执行func
-			fork子任务
+		takeEvery("",func(action),...agrs) 每次监听到 都会执行func
+			fork每个任务
 			
-		takeLatest("",func,...agrs) 每次监听到 会把之前的取消，在执行
-			fork子任务
+		takeLatest("",func(action),...agrs) 每次监听到 会把之前的取消，在执行
+			fork每个任务
 		
 			
 	```
@@ -159,6 +164,7 @@
 		takeLatest
 		takeLeading
 		throttle
+		spawn()
 		
 		
 	all([effect1,effect2]) 组合生成新的effect
@@ -222,13 +228,23 @@
 		清空channel缓存的Action
 		
 	takeEvery 
+		func*(action){}
 		每次收到type执行saga (执行子saga期间依然可以接受type)
 	takeLatest 
+		func*(action){}
 		收到type  会把之前的saga取消(没有完成的) 再次执行saga(执行子saga期间依然可以接受type)
 	throttle
 		节流
 			控制saga触发次数 在执行后一段时间内 不在执行
-	takeLeading
+	takeLeading 没有了
+		等待派发action  执行saga 然后无视action 知道saga完成
+		======等于
+			yeild  fork(function*(){
+				while(ture){
+					let action = yeild take("type")
+					yeild call(saga)
+				}
+			})
 	
 	Channel 队列 支持缓存
 		while(true){
