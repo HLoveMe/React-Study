@@ -55,7 +55,125 @@ class TestView extends Component {
 	
 * React.lazy
 	* 是代码切割的一部分 用于组件的懒加载
+
+* React.forwardRef
 	
+	* 通过组件向子组件自动传递 引用ref 的技术
+	* 解决重复使用的组件 ref应用问题
+	* 必须指向dom元素而不是React组件
+
+	```
+	//需要重复使用的组件
+	const CustomInput = React.forwardRef((props,ref)=>{
+		return <input {...props} ref={ref}>
+	})
+	class AC extends Co{
+		con(){
+			//用于接收Dom组件的引用
+			this.textref = React.creareRef();
+		}
+		didMount(){
+			//input 引用
+			this.textref.blur()
+		}
+		render(){
+			return (
+				<div>
+					<CustomInput ref={this.textref}/>
+				</div>
+			)
+		}
+	}
+	```
+	```
+	高阶组件
+	import React, { Component, createRef } from 'react';
+
+		const FocusInput = React.forwardRef((props, ref) => <input type="text" ref={ref} />);
+		
+		const bindRef = (WrappedComponent) => {
+		    const ConvertRef = (props) => {
+		        const { forwardedRef, ...other } = props;
+		        console.log(forwardedRef);
+		        return <WrappedComponent {...other} ref={forwardedRef} />;
+		    };
+		    // “ref”是保留字段需要用普通的字段来代替，传递给传入的组件
+		    return React.forwardRef((props, ref) => {
+		        console.log(ref);
+		        return <ConvertRef {...props} forwardedRef={ref} />;
+		    });
+		};
+		
+		const FocusInputWithRef = bindRef(FocusInput);
+		
+		class ForwardRef extends Component {
+		    constructor(props) {
+		        super(props);
+		        this.ref = createRef();
+		    }
+		
+		    componentDidMount() {
+		        const { current } = this.ref;
+		        current.focus();
+		    }
+		
+		    render() {
+		        return (
+		            <div>
+		                <p>forward ref</p>
+		                <FocusInputWithRef ref={this.ref} />
+		            </div>
+		        );
+		    }
+		}
+		export default ForwardRef;
+	```
+* React.Fragment	
+	
+	* 类似于 <></> 空标签
+	* 解决需要返回多个标签 但是不需要多余父类的情况
+	
+		```
+		function Columns1(){
+			return (
+				<div>
+					<td>1111</td>
+					<td>2222</td>
+				</div>
+			)
+		}
+		function Columns2(){
+			return (
+				<React.Fragment>
+					<td>1111</td>
+					<td>2222</td>
+				</React.Fragment>
+			)
+		}
+		
+		function Table(){
+			return (
+				<table>
+					<tr>
+						<Columns1 />
+					</tr>
+					<tr>
+						<Columns2 />
+					</tr>
+				</table>
+			)
+		}
+		Columns1 是没法达到要求的
+			<table>
+			  <tr>
+			    <div>=======>多余的
+			      <td>Hello</td>
+			      <td>World</td>
+			    </div>
+			  </tr>
+			</table>
+		```
+
 * Hooks 用于函数组件中
 
 	```
@@ -127,5 +245,60 @@ class TestView extends Component {
 			return <Text>{count}</Text>
 		}
 		````
+	* 自定义Hooks
+
+		```
+		监听网络状态
+		
+		function useNetStatus(){
+			const [connect,setConnect] = useState(fasle)
+			useEffect(()=>{
+				A.addListener((connect)=>{
+					setConnect(connect)
+				})
+				return ()=>{
+					A.remove()
+				}
+			})
+			return connect
+		}
+		
+		function A(){
+			const connect = useNetStatus;
+			return (
+				<Text>
+					{
+						connect ? "已经连接":"没有连接"
+					}
+				</Text>
+			)
+		}
+		```
 	
+* 错误边界
+
+	* 在子组件发生错误时 会导致整个应用无法正确加载界面
+	* 错误界面 容许你在捕获异常后 处理错误
+
+	```
+	class ErrorBoundary extends React.Component {
+		  constructor(props) {
+		    super(props);
+		    this.state = { hasError: false };
+		  }
+		
+		 //捕获异常		
+		  componentDidCatch(error, errorInfo) {
+		   sst({ hasError: true })
+		  }
+		
+		  render() {
+		    if (this.state.hasError) {
+		      return <h1>Something went wrong.</h1>;
+		    }
+		
+		    return this.props.children; 
+		  }
+	}
+	```
 	
