@@ -182,8 +182,11 @@ class TestView extends Component {
 	useContext
 	useReducer
 	useRef
+	useMemo
+	useCallback
 
-	只能在函数的第一层 不能包含在for 或者 if中
+	只能在函数的第一层 
+	不能包含在for 或者 if中
 		react 会根据useState使用顺序来保证下一次渲染可以拿到对应的值 [如何保证多个useState的相互独立]
 	```
 	* useState
@@ -222,7 +225,8 @@ class TestView extends Component {
 			}
 			const [count,setCount]=useState(0);
 			useEffect(()=>{
-				EventEmmiter.addListener("ABCD",handle)				return function(){
+				EventEmmiter.addListener("ABCD",handle);
+				return function(){
 					EventEmmiter.remove("ABCD");
 				}	
 			})
@@ -244,7 +248,65 @@ class TestView extends Component {
 			},[count])
 			return <Text>{count}</Text>
 		}
-		````
+		```
+	* useMemo useCallback
+	
+		```
+		Function组件缺少mount和update 每次调用都会执行所有流程和逻辑
+		useMemo useCallback 旨在解决该性能问题
+		
+		useMemo  缓存一个变量 useMemo<T>(factory: () => T, deps:): T;
+		useCallback 缓存一个函数  useCallback(func,deps):func
+		
+		useMemo可以实现useCallback
+		```
+		* useMemo
+
+			```
+			function ABView({count}){
+				//每次渲染时都会导致该函数的计算 及时count的值没有变化
+				let expensive = fun(){//从1 ...+ count}
+				return (
+					<div>
+						<div>{expensive}</div>
+					</div>
+				)
+			}
+			
+			function ABView({count}){
+				//会在第一次执行 
+				//如果count没有变化 该函数是不会次被执行
+				let expensive = useMemo(()=>{
+					return fun(){//从1 ...+ count}
+				},[count])
+				return (
+					<div>
+						<div>{expensive}</div>
+					</div>
+				)
+			}
+			```
+			
+		* useCallback
+
+			```
+			function SuperView(){
+				let changeName = ()=>{
+				
+				};
+				
+				let changeAge = useCallback(()=>{
+					
+				},[age]);
+				
+				return (
+					<div>
+						<ChildView change={changeName}/>
+					</div>
+				)
+			}
+			```
+			
 	* 自定义Hooks
 
 		```
