@@ -255,7 +255,7 @@ class TestView extends Component {
 		Function组件缺少mount和update 每次调用都会执行所有流程和逻辑
 		useMemo useCallback 旨在解决该性能问题
 		
-		useMemo  缓存一个变量 useMemo<T>(factory: () => T, deps:): T;
+		useMemo  缓存一个变量[函数返回值] useMemo<T>(factory: () => T, deps:): T;
 		useCallback 缓存一个函数  useCallback(func,deps):func
 		
 		useMemo可以实现useCallback
