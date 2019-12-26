@@ -40,6 +40,10 @@ class TestView extends Component {
     }
 }
 	```
+	```
+	class 组件 使用 .Consumer  用来获取Context
+	function组件使用 useContext hooks函数 获取Context
+	```
 	
 * React.memo
 
