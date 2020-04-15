@@ -1,4 +1,4 @@
-Conetnt
+Conetnt  两种使用方法
 
 * [React.createContext](./React_Content.md)
 
@@ -31,5 +31,4 @@ Conetnt
 		}
 	}
 	```
-
 

@@ -60,12 +60,36 @@ class TestView extends Component {
 * React.lazy
 	* 是代码切割的一部分 用于组件的懒加载
 
-* React.forwardRef
+* React.forwardRef React.useRef React.creareRef
 	
-	* 通过组件向子组件自动传递 引用ref 的技术
 	* 解决重复使用的组件 ref应用问题
-	* 必须指向dom元素而不是React组件
+	* React.creareRef 必须指向dom元素 
+	*  React.useRef 仅仅是个盒子  可以指向任何对象
+	*  React.forwardRef 解决funcComponent 不能ref的问题 
 
+		*  useRef 属于hook 只能用于function 多次render 仅仅返回一个对象
+		* createRef可以在function 或者 class中使用   多次render 返回不同对象 
+		* React.creareRef 只能用dom上  RN不该使用
+
+	```
+	const Button =(props)=>{
+		return <button {...props}/>
+	}
+	const Button2 =  React.forwardRef((props,ref)=>{
+		return (
+			<button {...props} ref={ref} />
+		)
+	})
+	const Buttons = React.for
+	const BView = (props)=>{
+		const button = React.useRef(null);
+		//const button  = React.creareRef();
+		return (
+			<Button ref={button}/>//报错 ref 不能自动使用在function组件上
+			<Button2 ref={button}/>正确
+		)
+	}
+	```
 	```
 	//需要重复使用的组件
 	const CustomInput = React.forwardRef((props,ref)=>{
@@ -212,6 +236,7 @@ class TestView extends Component {
 		* 在每次渲染中都会执行所有副作用函数 
 		* 函数都是异步执行
 		* 每次渲染都会执行副作用函数
+		* 如果依赖外部变量 需要添加该变量为依赖项
 		
 		```
 		functuon View(pros){
@@ -221,6 +246,20 @@ class TestView extends Component {
 			})
 			return <Text>{count}</Text>
 		}
+		```
+		依赖项
+		
+		```
+		functuon View(pros){
+			const [count,setCount]=useState(0);
+			var name ="";
+			useEffect(()=>{
+				const q  = `${name}=sasasa`;//使用外部变量
+				
+			},[name]);//务必添加依赖性  减少不必要的执行
+			return <Text>{count}</Text>
+		}
+		
 		```
 		```
 		资源释放
@@ -244,6 +283,7 @@ class TestView extends Component {
 		useEffect(()=>{},[arg])
 			第二个参数 表示 只有在该参数值发生变化后才重新调用副作用函数
 		useEffect(()=>{},[空数组]) 只会调用一次 相当于componentDidMount
+		useEffect(()=>{},[n]) n 变化是调用  相当于 shouldDidUpdate
 		
 		functuon View(pros){
 			const [count,setCount]=useState(0);
@@ -339,6 +379,63 @@ class TestView extends Component {
 				</Text>
 			)
 		}
+		```
+		
+		```
+		import { useEffect, useRef, useState, useCallback } from 'react'
+		import { isEqual } from 'lodash'
+		
+		const useService = (service, params) => {
+		  const prevParams = useRef(null);
+		  const [callback, { loading, error, response }] = useServiceCallback(service)
+		
+		  useEffect(() => {
+		    if (!isEqual(prevParams.current, params)) {
+		      prevParams.current = params;
+		      callback(params)
+		    }
+		  })
+		
+		  return { loading, error, response }
+		}
+		
+		export const useServiceCallback = (service) => {
+		  const [loading, setLoading] = useState(false)
+		  const [error, setError] = useState(null)
+		  const [response, setResponse] = useState(null)
+		
+		  // ä½¿ç¨ useCallbackï¼æ¥å¤æ­ service æ¯å¦æ¹å
+		  const callback = useCallback(
+		    params => {
+		      setLoading(true)
+		      setError(null)
+		      service(params)
+		        .then(response => {
+		          console.log(response)
+		          setLoading(false)
+		          setResponse(response)
+		        })
+		        .catch(error => {
+		          setLoading(false)
+		          setError(error)
+		        })
+		    },
+		    [service]
+		  )
+		
+		  return [callback, { loading, error, response }]
+		}
+		
+		export default useService
+		
+		
+		const getList = (params)=>return Promise();
+		function List (){
+			const [loding,error,response] = useService(getList,{size:10});
+			
+			return (<div/>)
+		}
+
 		```
 	
 * 错误边界
