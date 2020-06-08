@@ -63,13 +63,12 @@ class TestView extends Component {
 * React.forwardRef React.useRef React.creareRef
 	
 	* 解决重复使用的组件 ref应用问题
-	* React.creareRef 必须指向dom元素 
+	*  React.creareRef  引用Dom节点 和 React元素
 	*  React.useRef 仅仅是个盒子  可以指向任何对象
-	*  React.forwardRef 解决funcComponent 不能ref的问题 
+	*  React.forwardRef 解决funcComponent 不能ref的问题 创建新的组件
 
 		*  useRef 属于hook 只能用于function 多次render 仅仅返回一个对象
-		* createRef可以在function 或者 class中使用   多次render 返回不同对象 
-		* React.creareRef 只能用dom上  RN不该使用
+		*  createRef可以在function 或者 class中使用   多次render 返回不同对象 
 
 	```
 	const Button =(props)=>{
