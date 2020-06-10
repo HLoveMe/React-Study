@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 //TouchableWithoutFeedback <-  TouchableHighlight
 //TouchableWithoutFeedback <-  TouchableOpacity
 //TouchableWithoutFeedback <- TouchableNativeFeedback
+
+/***
+ * 
+ * 
+ * 统一修改  touchableHandlePress
+ */
+
+
 import { TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight } from 'react-native';
 import { Subject } from 'rxjs';
 (function () {
