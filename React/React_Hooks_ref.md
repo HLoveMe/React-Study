@@ -292,6 +292,13 @@ class TestView extends Component {
 			return <Text>{count}</Text>
 		}
 		```
+	* memo 相当于functiion组件中的PureComponent
+
+		```
+		const PureC = memo((props)=>{
+			return div
+		})
+		```
 	* useMemo useCallback
 	
 		```
